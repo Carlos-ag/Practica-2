@@ -23,7 +23,9 @@ def send_message(server_address, port, message):
         
 
 def main():
-    server_ip, server_port = ask_ip_and_port()
+    # server_ip, server_port = ask_ip_and_port()
+    server_ip = "localhost"
+    server_port = 6968
     messages = []
     message = ""
     while message != "exit":

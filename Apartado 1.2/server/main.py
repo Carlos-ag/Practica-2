@@ -10,10 +10,10 @@ lock = threading.Lock()
 # has_analyzed_message = True
 
 def kill_server():
-    time.sleep(0)
+    # time.sleep(0)
     print("Server shutting down...")
-    os.system("ls")
-    os.system("^C")
+    os._exit(0)
+
 
 def handle_client_connection(client_socket):
     with client_socket:
@@ -24,18 +24,17 @@ def handle_client_connection(client_socket):
         #     should_continue = False 
         #     has_analyzed_message = True
         # else:
-        if data_decoded == "exit":
-            # start thread to kill server
-            kill_server_thread = threading.Thread(target=kill_server)
-            kill_server_thread.start()
-        
+                
         if data_decoded != "exit":
             has_analyzed_message = True
             print(f"\nReceived:")
             with lock:
                 for m in data_decoded.split(" "):
-                    print(m, end=" ")
+                    print(m, end=" \n\n")
             client_socket.sendall(data)
+        else:
+            kill_server_thread = threading.Thread(target=kill_server)
+            kill_server_thread.start()
 
 def start_server(port):
     global should_continue

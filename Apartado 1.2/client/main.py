@@ -33,6 +33,8 @@ def main():
         messages.append(message)
     
     threads = []
+    # no estabamos enviando el "exit" al servidor, por eso no cerraba ->
+    messages.append(message)
     for message in messages[:-1]: 
         thread = threading.Thread(target=send_message, args=(server_ip, server_port, message))
         threads.append(thread)

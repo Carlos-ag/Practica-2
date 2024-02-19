@@ -28,26 +28,26 @@ def send_message(server_address, port, message, contador):
 
 def main():
     global contador
-    # server_ip, server_port = ask_ip_and_port()
-    server_ip = "localhost"
-    server_port = 6968
+    server_ip, server_port = ask_ip_and_port()
+    # server_ip = "localhost"
+    # server_port = 6968
     messages = []
     message = ""
     while message != "exit":
         message = input("Enter message (type 'exit' to finish): ")
         messages.append(message)
     
-    threads = []
+    # threads = []
     # no estabamos enviando el "exit" al servidor, por eso no cerraba ->
-    messages.append(message)
-    for message in messages[:-1]: 
+    # messages.append(message)
+    for message in messages: 
         contador += 1
-        thread = threading.Thread(target=send_message, args=(server_ip, server_port, message, contador))
-        threads.append(thread)
-        thread.start()
+        t = threading.Thread(target=send_message, args=(server_ip, server_port, message, contador))
+        # threads.append(thread)
+        t.start()
     
-    for thread in threads:
-        thread.join()
+    # for thread in threads:
+    #     thread.join()
 
 
     

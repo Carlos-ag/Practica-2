@@ -27,22 +27,22 @@ def handle_client_connection(client_socket):
         # else:
                 
         if data_decoded != "exit":
-            has_analyzed_message = True
+            # has_analyzed_message = True
             print(f"\nReceived:\n")
             with lock:
                 for m in data_decoded.split(" "):
                     print(m, end=" ")
             client_socket.sendall(data)
-        else:
-            kill_server_thread = threading.Thread(target=kill_server)
-            kill_server_thread.start()
+        # else:
+        #     kill_server_thread = threading.Thread(target=kill_server)
+        #     kill_server_thread.start()
 
 def start_server(port):
     global should_continue
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server.bind((ip, port))
     server.listen()
-    server.settimeout(1)  # Set a timeout of 1 second
+
     print(f"Listening on port {port}...")
     while True:
         try:
@@ -60,8 +60,8 @@ def start_server(port):
 
 
 def main():
-    # port = ask_valid_port()
-    port = 6968
+    port = ask_valid_port()
+    # port = 6968
     start_server(port)
 
 if __name__ == "__main__":

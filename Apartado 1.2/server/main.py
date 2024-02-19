@@ -1,67 +1,48 @@
 import socket
 import threading
-from valid_port import ask_valid_port
-import time
-import os
+from valid_port import is_valid_port
 
 ip = "localhost"
 lock = threading.Lock()
-# should_continue = True 
-# has_analyzed_message = True
-
-def kill_server():
-    time.sleep(5)
-    print("Server shutting down...")
-    os._exit(0)
-
 
 def handle_client_connection(client_socket):
     with client_socket:
-        data = client_socket.recv(1024)
-        
-        data_decoded = data.decode()
-        # if data_decoded == "exit":
-        #     print("Server shutting down...")
-        #     should_continue = False 
-        #     has_analyzed_message = True
-        # else:
-                
-        if data_decoded != "exit":
-            # has_analyzed_message = True
-            print(f"\nReceived:\n")
-            with lock:
-                for m in data_decoded.split(" "):
-                    print(m, end=" ")
+        with lock:
+            data = client_socket.recv(1024)
+            data_decoded = data.decode()
+            print(f"\nReceived:")
+            for m in data_decoded.split(" "):
+                print(m, sep="")
             client_socket.sendall(data)
-        # else:
-        #     kill_server_thread = threading.Thread(target=kill_server)
-        #     kill_server_thread.start()
 
 def start_server(port):
-    global should_continue
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server.bind((ip, port))
     server.listen()
-
     print(f"Listening on port {port}...")
     while True:
-        try:
-            client_sock, address = server.accept()
-            print(f"\n\nAccepted connection from {address}\n")
-            client_handler = threading.Thread(
-                target=handle_client_connection,
-                args=(client_sock,)
-            )
-            client_handler.start()
-        except socket.timeout:
-            continue  # Continue checking the flag if accept times out
-        except KeyboardInterrupt:
-            break  # Allow server to be stopped with Ctrl+C
+        client_sock, address = server.accept()
+        print(f"Accepted connection from {address}")
+        client_handler = threading.Thread(
+            target=handle_client_connection,
+            args=(client_sock,)
+        )
+        client_handler.start()
 
+def ask_valid_port():
+    
+    is_valid = False  
+    while not is_valid:
+        user_port = input("Please enter a port number: ")
+        is_valid = is_valid_port(user_port)
+        if is_valid:
+            print(f"The port number {user_port} is valid.")
+            return int(user_port)
+        else:
+            print("Invalid port number, please try again.")
 
 def main():
     port = ask_valid_port()
-    # port = 6968
     start_server(port)
 
 if __name__ == "__main__":
